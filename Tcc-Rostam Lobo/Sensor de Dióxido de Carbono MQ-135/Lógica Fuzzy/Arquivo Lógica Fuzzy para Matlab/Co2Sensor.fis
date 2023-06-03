@@ -1,0 +1,47 @@
+[System]
+Name='Co2Sensor'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=9
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='Co2Sensor'
+Range=[0 1000]
+NumMFs=3
+MF1='Co2B':'trapmf',[-360 -40 100 300]
+MF2='Normal':'trapmf',[102.645502645503 302.645502645503 552.645502645503 802.645502645503]
+MF3='Co2Alt':'trapmf',[550 800 1040 1360]
+
+[Input2]
+Name='Co2Ambient'
+Range=[0 1000]
+NumMFs=3
+MF1='AmbB':'trapmf',[-360 -40 100 300]
+MF2='AmbNormal':'trapmf',[140 460 540 860]
+MF3='AmbAlt':'trapmf',[640 960 1040 1360]
+
+[Output1]
+Name='Acao'
+Range=[0 1]
+NumMFs=3
+MF1='CuidadoPGas':'trimf',[-0.4 0 0.4]
+MF2='Normal':'trimf',[0.1 0.5 0.9]
+MF3='CuidadoMGas':'trimf',[0.6 1 1.4]
+
+[Rules]
+1 1, 1 (1) : 1
+1 2, 2 (1) : 1
+1 3, 3 (1) : 1
+2 1, 1 (1) : 1
+2 2, 2 (1) : 1
+2 3, 3 (1) : 1
+3 2, 2 (1) : 1
+3 3, 3 (1) : 1
+3 1, 1 (1) : 1
