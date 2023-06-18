@@ -20,6 +20,12 @@ FIS_TYPE g_fisOutput[fis_gcO];
 
 void setup()
 {
+  // Pin mode for Input: PHSensor
+  pinMode(0 , INPUT);
+  // Pin mode for Input: PhAmbient
+  pinMode(1 , INPUT);
+// Pin mode for Output: Co2Sensor
+  pinMode(2 , OUTPUT);
   Serial.begin(9600);
 
 }

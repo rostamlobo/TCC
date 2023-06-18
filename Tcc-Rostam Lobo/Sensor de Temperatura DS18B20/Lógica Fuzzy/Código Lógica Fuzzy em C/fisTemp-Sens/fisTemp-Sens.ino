@@ -7,6 +7,7 @@
 typedef FIS_TYPE(*_FIS_MF)(FIS_TYPE, FIS_TYPE*);
 typedef FIS_TYPE(*_FIS_ARR_OP)(FIS_TYPE, FIS_TYPE);
 typedef FIS_TYPE(*_FIS_ARR)(FIS_TYPE*, int, _FIS_ARR_OP);
+
 // Number of inputs to the fuzzy inference system
 const int fis_gcI = 2;
 // Number of outputs to the fuzzy inference system
@@ -21,45 +22,38 @@ FIS_TYPE g_fisOutput[fis_gcO];
 void setup()
 {
     // initialize the Analog pins for input.
-    // Pin mode for Input: Co2Sensor
+    // Pin mode for Input: SensorTemp
     pinMode(0 , INPUT);
-    // Pin mode for Input: Co2Ambient
+    // Pin mode for Input: VariávelAmbiente
     pinMode(1 , INPUT);
+
+
     // initialize the Analog pins for output.
-    // Pin mode for Output: Acao
+    // Pin mode for Output: Ação/Saída
     pinMode(2 , OUTPUT);
-    Serial.begin(9600);
+  Serial.begin(9600);
 }
 
 // Loop routine runs over and over again forever:
 void loop()
 {
-    // Read Input: Co2Sensor
+    // Read Input: SensorTemp
     g_fisInput[0] = analogRead(0);
-    // Read Input: Co2Ambient
+    // Read Input: VariávelAmbiente
     g_fisInput[1] = analogRead(1);
 
     g_fisOutput[0] = 0;
 
     fis_evaluate();
 
-    // Set output vlaue: Acao
-    Serial.println(g_fisOutput[0]);
+    // Set output vlaue: Ação/Saída
+    analogWrite(2 , g_fisOutput[0]);
 
 }
 
 //***********************************************************************
 // Support functions for Fuzzy Inference System                          
 //***********************************************************************
-// Trapezoidal Member Function
-FIS_TYPE fis_trapmf(FIS_TYPE x, FIS_TYPE* p)
-{
-    FIS_TYPE a = p[0], b = p[1], c = p[2], d = p[3];
-    FIS_TYPE t1 = ((x <= c) ? 1 : ((d < x) ? 0 : ((c != d) ? ((d - x) / (d - c)) : 0)));
-    FIS_TYPE t2 = ((b <= x) ? 1 : ((x < a) ? 0 : ((a != b) ? ((x - a) / (b - a)) : 0)));
-    return (FIS_TYPE) min(t1, t2);
-}
-
 // Triangular Member Function
 FIS_TYPE fis_trimf(FIS_TYPE x, FIS_TYPE* p)
 {
@@ -71,6 +65,15 @@ FIS_TYPE fis_trimf(FIS_TYPE x, FIS_TYPE* p)
     if (b == c) return (FIS_TYPE) (t1*(a <= x)*(x <= b));
     t1 = min(t1, t2);
     return (FIS_TYPE) max(t1, 0);
+}
+
+// Trapezoidal Member Function
+FIS_TYPE fis_trapmf(FIS_TYPE x, FIS_TYPE* p)
+{
+    FIS_TYPE a = p[0], b = p[1], c = p[2], d = p[3];
+    FIS_TYPE t1 = ((x <= c) ? 1 : ((d < x) ? 0 : ((c != d) ? ((d - x) / (d - c)) : 0)));
+    FIS_TYPE t2 = ((b <= x) ? 1 : ((x < a) ? 0 : ((a != b) ? ((x - a) / (b - a)) : 0)));
+    return (FIS_TYPE) min(t1, t2);
 }
 
 FIS_TYPE fis_min(FIS_TYPE a, FIS_TYPE b)
@@ -107,7 +110,7 @@ FIS_TYPE fis_array_operation(FIS_TYPE *array, int size, _FIS_ARR_OP pfnOp)
 // Pointers to the implementations of member functions
 _FIS_MF fis_gMF[] =
 {
-    fis_trapmf, fis_trimf
+    fis_trimf, fis_trapmf
 };
 
 // Count of member function for each Input
@@ -117,30 +120,30 @@ int fis_gIMFCount[] = { 3, 3 };
 int fis_gOMFCount[] = { 3 };
 
 // Coefficients for the Input Member Functions
-FIS_TYPE fis_gMFI0Coeff1[] = { -360, -40, 100, 300 };
-FIS_TYPE fis_gMFI0Coeff2[] = { 102.645502645503, 302.645502645503, 552.645502645503, 802.645502645503 };
-FIS_TYPE fis_gMFI0Coeff3[] = { 550, 800, 1040, 1360 };
+FIS_TYPE fis_gMFI0Coeff1[] = { -40, 0, 25 };
+FIS_TYPE fis_gMFI0Coeff2[] = { 10, 25, 40, 55 };
+FIS_TYPE fis_gMFI0Coeff3[] = { 40, 100, 140 };
 FIS_TYPE* fis_gMFI0Coeff[] = { fis_gMFI0Coeff1, fis_gMFI0Coeff2, fis_gMFI0Coeff3 };
-FIS_TYPE fis_gMFI1Coeff1[] = { -360, -40, 100, 300 };
-FIS_TYPE fis_gMFI1Coeff2[] = { 140, 460, 540, 860 };
-FIS_TYPE fis_gMFI1Coeff3[] = { 640, 960, 1040, 1360 };
+FIS_TYPE fis_gMFI1Coeff1[] = { -40, 0, 40 };
+FIS_TYPE fis_gMFI1Coeff2[] = { 14, 40, 50, 80 };
+FIS_TYPE fis_gMFI1Coeff3[] = { 50, 100, 140 };
 FIS_TYPE* fis_gMFI1Coeff[] = { fis_gMFI1Coeff1, fis_gMFI1Coeff2, fis_gMFI1Coeff3 };
 FIS_TYPE** fis_gMFICoeff[] = { fis_gMFI0Coeff, fis_gMFI1Coeff };
 
 // Coefficients for the Output Member Functions
-FIS_TYPE fis_gMFO0Coeff1[] = { -0.4, 0, 0.4 };
-FIS_TYPE fis_gMFO0Coeff2[] = { 0.1, 0.5, 0.9 };
-FIS_TYPE fis_gMFO0Coeff3[] = { 0.6, 1, 1.4 };
+FIS_TYPE fis_gMFO0Coeff1[] = { -40, 0, 40 };
+FIS_TYPE fis_gMFO0Coeff2[] = { 10, 40, 50, 90 };
+FIS_TYPE fis_gMFO0Coeff3[] = { 50, 100, 140 };
 FIS_TYPE* fis_gMFO0Coeff[] = { fis_gMFO0Coeff1, fis_gMFO0Coeff2, fis_gMFO0Coeff3 };
 FIS_TYPE** fis_gMFOCoeff[] = { fis_gMFO0Coeff };
 
 // Input membership function set
-int fis_gMFI0[] = { 0, 0, 0 };
-int fis_gMFI1[] = { 0, 0, 0 };
+int fis_gMFI0[] = { 0, 1, 0 };
+int fis_gMFI1[] = { 0, 1, 0 };
 int* fis_gMFI[] = { fis_gMFI0, fis_gMFI1};
 
 // Output membership function set
-int fis_gMFO0[] = { 1, 1, 1 };
+int fis_gMFO0[] = { 0, 1, 0 };
 int* fis_gMFO[] = { fis_gMFO0};
 
 // Rule Weights
@@ -156,9 +159,9 @@ int fis_gRI2[] = { 1, 3 };
 int fis_gRI3[] = { 2, 1 };
 int fis_gRI4[] = { 2, 2 };
 int fis_gRI5[] = { 2, 3 };
-int fis_gRI6[] = { 3, 2 };
-int fis_gRI7[] = { 3, 3 };
-int fis_gRI8[] = { 3, 1 };
+int fis_gRI6[] = { 3, 1 };
+int fis_gRI7[] = { 3, 2 };
+int fis_gRI8[] = { 3, 3 };
 int* fis_gRI[] = { fis_gRI0, fis_gRI1, fis_gRI2, fis_gRI3, fis_gRI4, fis_gRI5, fis_gRI6, fis_gRI7, fis_gRI8 };
 
 // Rule Outputs
@@ -168,22 +171,22 @@ int fis_gRO2[] = { 3 };
 int fis_gRO3[] = { 1 };
 int fis_gRO4[] = { 2 };
 int fis_gRO5[] = { 3 };
-int fis_gRO6[] = { 2 };
-int fis_gRO7[] = { 3 };
-int fis_gRO8[] = { 1 };
+int fis_gRO6[] = { 1 };
+int fis_gRO7[] = { 2 };
+int fis_gRO8[] = { 3 };
 int* fis_gRO[] = { fis_gRO0, fis_gRO1, fis_gRO2, fis_gRO3, fis_gRO4, fis_gRO5, fis_gRO6, fis_gRO7, fis_gRO8 };
 
 // Input range Min
 FIS_TYPE fis_gIMin[] = { 0, 0 };
 
 // Input range Max
-FIS_TYPE fis_gIMax[] = { 1000, 1000 };
+FIS_TYPE fis_gIMax[] = { 100, 100 };
 
 // Output range Min
 FIS_TYPE fis_gOMin[] = { 0 };
 
 // Output range Max
-FIS_TYPE fis_gOMax[] = { 1 };
+FIS_TYPE fis_gOMax[] = { 100 };
 
 //***********************************************************************
 // Data dependent support functions for Fuzzy Inference System           
