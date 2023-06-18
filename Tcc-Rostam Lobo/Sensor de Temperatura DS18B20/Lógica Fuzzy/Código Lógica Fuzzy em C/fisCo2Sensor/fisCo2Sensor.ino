@@ -22,17 +22,7 @@ FIS_TYPE g_fisOutput[fis_gcO];
 // Setup routine runs once when you press reset:
 void setup()
 {
-    // initialize the Analog pins for input.
-    // Pin mode for Input: Co2Sensor
-    pinMode(0 , INPUT);
-    // Pin mode for Input: Co2Ambient
-    pinMode(1 , INPUT);
-
-
-    // initialize the Analog pins for output.
-    // Pin mode for Output: Acao
-    pinMode(2 , OUTPUT);
-
+    Serial.begin(9600);
 }
 
 // Loop routine runs over and over again forever:

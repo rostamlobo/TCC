@@ -20,16 +20,7 @@ FIS_TYPE g_fisOutput[fis_gcO];
 
 void setup()
 {
-    // initialize the Analog pins for input.
-    // Pin mode for Input: ph-Sensor
-    pinMode(0 , INPUT);
-    // Pin mode for Input: Condição
-    pinMode(1 , INPUT);
-
-
-    // initialize the Analog pins for output.
-    // Pin mode for Output: Tomada-de-decisão
-    pinMode(2 , OUTPUT);
+  Serial.begin(9600);
 
 }
 
@@ -39,14 +30,13 @@ void loop()
     // Read Input: ph-Sensor
     g_fisInput[0] = analogRead(0);
     // Read Input: Condição
-    g_fisInput[1] = analogRead(1);
+    g_fisInput[1] = 10.5;
 
     g_fisOutput[0] = 0;
 
     fis_evaluate();
 
-    // Set output vlaue: Tomada-de-decisão
-    analogWrite(2 , g_fisOutput[0]);
+    Serial.println(g_fisOutput[0]);
 
 }
 
