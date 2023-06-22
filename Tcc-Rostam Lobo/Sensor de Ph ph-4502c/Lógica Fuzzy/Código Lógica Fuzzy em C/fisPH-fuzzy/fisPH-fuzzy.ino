@@ -7,7 +7,6 @@
 typedef FIS_TYPE(*_FIS_MF)(FIS_TYPE, FIS_TYPE*);
 typedef FIS_TYPE(*_FIS_ARR_OP)(FIS_TYPE, FIS_TYPE);
 typedef FIS_TYPE(*_FIS_ARR)(FIS_TYPE*, int, _FIS_ARR_OP);
-
 // Number of inputs to the fuzzy inference system
 const int fis_gcI = 2;
 // Number of outputs to the fuzzy inference system
@@ -18,15 +17,10 @@ const int fis_gcR = 9;
 FIS_TYPE g_fisInput[fis_gcI];
 FIS_TYPE g_fisOutput[fis_gcO];
 
+// Setup routine runs once when you press reset:
 void setup()
 {
-  // Pin mode for Input: PHSensor
-  pinMode(0 , INPUT);
-  // Pin mode for Input: PhAmbient
-  pinMode(1 , INPUT);
-// Pin mode for Output: Co2Sensor
-  pinMode(2 , OUTPUT);
-  Serial.begin(9600);
+   Serial.begin(9600);
 
 }
 
@@ -36,12 +30,13 @@ void loop()
     // Read Input: ph-Sensor
     g_fisInput[0] = analogRead(0);
     // Read Input: Condição
-    g_fisInput[1] = 10.5;
+    g_fisInput[1] = 7;
 
     g_fisOutput[0] = 0;
 
     fis_evaluate();
 
+    // Set output vlaue: Tomada-de-decisão
     Serial.println(g_fisOutput[0]);
 
 }
@@ -102,26 +97,26 @@ int fis_gIMFCount[] = { 5, 5 };
 int fis_gOMFCount[] = { 5 };
 
 // Coefficients for the Input Member Functions
-FIS_TYPE fis_gMFI0Coeff1[] = { -3.4, 0, 1, 3.4 };
-FIS_TYPE fis_gMFI0Coeff2[] = { 1, 3.4, 4.2, 6.5 };
-FIS_TYPE fis_gMFI0Coeff3[] = { 4.4, 6.5, 7.2, 9.5 };
-FIS_TYPE fis_gMFI0Coeff4[] = { 7.2, 9.5, 10.5, 12.4 };
-FIS_TYPE fis_gMFI0Coeff5[] = { 10.5, 12.8, 14, 19.7 };
+FIS_TYPE fis_gMFI0Coeff1[] = { -3, 0, 1, 3 };
+FIS_TYPE fis_gMFI0Coeff2[] = { 1, 3, 4, 6 };
+FIS_TYPE fis_gMFI0Coeff3[] = { 4, 6.8, 7, 9.5 };
+FIS_TYPE fis_gMFI0Coeff4[] = { 7, 9.5, 10, 12 };
+FIS_TYPE fis_gMFI0Coeff5[] = { 10, 12, 14, 19.7 };
 FIS_TYPE* fis_gMFI0Coeff[] = { fis_gMFI0Coeff1, fis_gMFI0Coeff2, fis_gMFI0Coeff3, fis_gMFI0Coeff4, fis_gMFI0Coeff5 };
 FIS_TYPE fis_gMFI1Coeff1[] = { -3.15, -0.35, 0.35, 3.15 };
 FIS_TYPE fis_gMFI1Coeff2[] = { 0.35, 3.15, 3.85, 6.65 };
-FIS_TYPE fis_gMFI1Coeff3[] = { 3.85, 6.8, 7.2, 10.15 };
+FIS_TYPE fis_gMFI1Coeff3[] = { 3.85, 6.8, 7, 10.15 };
 FIS_TYPE fis_gMFI1Coeff4[] = { 7.35, 10.15, 10.85, 13.65 };
 FIS_TYPE fis_gMFI1Coeff5[] = { 10.85, 13.65, 14.35, 17.15 };
 FIS_TYPE* fis_gMFI1Coeff[] = { fis_gMFI1Coeff1, fis_gMFI1Coeff2, fis_gMFI1Coeff3, fis_gMFI1Coeff4, fis_gMFI1Coeff5 };
 FIS_TYPE** fis_gMFICoeff[] = { fis_gMFI0Coeff, fis_gMFI1Coeff };
 
 // Coefficients for the Output Member Functions
-FIS_TYPE fis_gMFO0Coeff1[] = { -20.3, -14, -14, -7.7 };
-FIS_TYPE fis_gMFO0Coeff2[] = { -14, -7.7, -6.3, 0 };
-FIS_TYPE fis_gMFO0Coeff3[] = { -6.3, -0, 0, 6.3 };
-FIS_TYPE fis_gMFO0Coeff4[] = { 0, 6.3, 7.7, 14 };
-FIS_TYPE fis_gMFO0Coeff5[] = { 7.2, 14, 14, 17.4 };
+FIS_TYPE fis_gMFO0Coeff1[] = { -3.15, 0, 0, 3.15 };
+FIS_TYPE fis_gMFO0Coeff2[] = { 0, 3.15, 3.85, 7 };
+FIS_TYPE fis_gMFO0Coeff3[] = { 3.85, 7, 7, 10.15 };
+FIS_TYPE fis_gMFO0Coeff4[] = { 7, 10.15, 10.85, 14 };
+FIS_TYPE fis_gMFO0Coeff5[] = { 10.6, 14, 14, 15.7 };
 FIS_TYPE* fis_gMFO0Coeff[] = { fis_gMFO0Coeff1, fis_gMFO0Coeff2, fis_gMFO0Coeff3, fis_gMFO0Coeff4, fis_gMFO0Coeff5 };
 FIS_TYPE** fis_gMFOCoeff[] = { fis_gMFO0Coeff };
 
@@ -171,7 +166,7 @@ FIS_TYPE fis_gIMin[] = { 0, 0 };
 FIS_TYPE fis_gIMax[] = { 14, 14 };
 
 // Output range Min
-FIS_TYPE fis_gOMin[] = { -14 };
+FIS_TYPE fis_gOMin[] = { 0 };
 
 // Output range Max
 FIS_TYPE fis_gOMax[] = { 14 };

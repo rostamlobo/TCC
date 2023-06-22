@@ -21,16 +21,7 @@ FIS_TYPE g_fisOutput[fis_gcO];
 // Setup routine runs once when you press reset:
 void setup()
 {
-    // initialize the Analog pins for input.
-    // Pin mode for Input: SensorTemp
-    pinMode(0 , INPUT);
-    // Pin mode for Input: VariávelAmbiente
-    pinMode(1 , INPUT);
 
-
-    // initialize the Analog pins for output.
-    // Pin mode for Output: Ação/Saída
-    pinMode(2 , OUTPUT);
   Serial.begin(9600);
 }
 
@@ -47,7 +38,7 @@ void loop()
     fis_evaluate();
 
     // Set output vlaue: Ação/Saída
-    analogWrite(2 , g_fisOutput[0]);
+    Serial.println(g_fisOutput[0]);
 
 }
 
